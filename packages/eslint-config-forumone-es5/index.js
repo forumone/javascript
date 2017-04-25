@@ -41,7 +41,7 @@ exports.rules = {
   // Additional rules
 
   // Don't leak globals
-  'no-implicit-globals': 'warn',
+  'no-implicit-globals': 'error',
 
   // Disallow superfluous parentheses, unless you need to disambiguate precedence
   'no-extra-parens': ['error', 'all', {
