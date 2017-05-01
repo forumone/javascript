@@ -1,6 +1,6 @@
 {
   "name": "eslint-config-forumone-es5",
-  "description": "ForumOne's ESLint configuration for ES5 code",
+  "description": "Forum One's ESLint configuration for ES5 code",
   "version": "2.0.0",
   "license": "MIT",
   "author": "Alex Ford <aford@forumone.com>",

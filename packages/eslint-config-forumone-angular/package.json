@@ -1,6 +1,6 @@
 {
   "name": "eslint-config-forumone-angular",
-  "description": "ForumOne's ESLint configuration for Angular 1.x code",
+  "description": "Forum One's ESLint configuration for Angular.js 1.x code",
   "version": "1.0.0",
   "license": "MIT",
   "author": "Alex Ford <aford@forumone.com>",

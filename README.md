@@ -1,7 +1,7 @@
-ForumOne JavaScript Coding Style
+Forum One JavaScript Coding Style
 ================================
 
-Our coding conventions are minor modifications of [AirBNB's legacy ES5 configuration](https://github.com/airbnb/javascript/tree/es5-deprecated/es5), with customizations for specific environments.
+Our coding conventions are minor modifications of [Airbnb's legacy ES5 configuration](https://github.com/airbnb/javascript/tree/es5-deprecated/es5), with customizations for specific environments.
 
 Usage
 -----
@@ -17,4 +17,4 @@ Modules
 
 ### eslint-config-forumone-es5
 
-ForumOne's base ES5 ESLint configuration.
+Forum One's base ES5 ESLint configuration.
