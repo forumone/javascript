@@ -44,7 +44,16 @@ const config = tseslint.config(
           allowSingleExtends: true,
         },
       ],
-      "@typescript-eslint/no-use-before-define": ["error"],
+      "@typescript-eslint/no-use-before-define": "error",
+      eqeqeq: "error",
+      "no-console": [
+        "error",
+        {
+          allow: ["warn", "error"],
+        },
+      ],
+      "no-duplicate-imports": "error",
+      "no-lonely-if": "error",
       "no-param-reassign": [
         // Allow modifying props, esp. for DOM Nodes
         "error",
@@ -52,6 +61,19 @@ const config = tseslint.config(
           props: false,
         },
       ],
+      "no-shadow": "error",
+      "no-useless-assignment": "error",
+      "no-var": "error",
+      "object-shorthand": ["error", "always"],
+      "prefer-const": "error",
+      "prefer-destructuring": [
+        "error",
+        {
+          array: false,
+          object: true,
+        },
+      ],
+      "prefer-spread": "error",
       "prettier/prettier": "error",
     },
   },
