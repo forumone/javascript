@@ -1,65 +1,71 @@
-/* eslint-env node, commonjs */
+// @ts-check
 
-exports.ecmaFeatures = {
-  impliedStrict: true,
-};
+import eslint from "@eslint/js";
+import tseslint from "typescript-eslint";
+import prettier from "eslint-config-prettier";
+import prettierPlugin from "eslint-plugin-prettier";
+import globals from "globals";
 
-// Our ES5 projects are exclusively browser-focused
-exports.env = {
-  browser: true,
-  node: false,
-  commonjs: false,
-};
-
-exports.extends = 'airbnb-base/legacy';
-
-exports.rules = {
-  // Overrides of airbnb-base/legacy
-
-  // IE8 is dead, we can require trailing commas safely
-  'comma-dangle': ['error', 'always-multiline'],
-
-  // block-scoped-var and no-use-before-define cover the use cases here
-  // no need to manually hoist as well
-  'vars-on-top': ['off'],
-
-  // Style guidance left to the programmer
-  'no-else-return': ['off'],
-  'func-names': ['off'],
-
-  // Function hoisting is always safe
-  'no-use-before-define': ['error', {
-    functions: false,
-  }],
-
-  // Allow conditionals in loops (but only if you promise that you know what you're doing)
-  'no-cond-assign': ['error', 'except-parens'],
-
-  // Unconditionally require curly braces
-  curly: ['error', 'all'],
-
-  // Additional rules
-
-  // Don't leak globals
-  'no-implicit-globals': 'error',
-
-  // Disallow superfluous parentheses, unless you need to disambiguate precedence
-  'no-extra-parens': ['error', 'all', {
-    conditionalAssign: false,
-    nestedBinaryExpressions: false,
-  }],
-
-  // Eventually, this will be an error (and also require parameter descriptions)
-  'valid-jsdoc': ['warn', {
-    requireReturn: false,
-    requireParamDescription: false,
-    requireReturnDescription: false,
-
-    prefer: {
-      arg: 'param',
-      argument: 'param',
-
-      returns: 'return',
+/**
+ * @type {import('@typescript-eslint/utils').TSESLint.FlatConfig.ConfigFile}
+ */
+const config = tseslint.config(
+  eslint.configs.recommended,
+  tseslint.configs.recommendedTypeChecked,
+  prettier,
+  {
+    languageOptions: {
+      ecmaVersion: "latest",
+      globals: {
+        ...globals.node,
+        ...globals.browser,
+      },
+      parserOptions: {
+        projectService: true,
+      },
+      sourceType: "module",
     },
-  }],
-};
+    plugins: {
+      "@typescript-eslint": tseslint.plugin,
+      prettier: prettierPlugin,
+    },
+    rules: {
+      "@typescript-eslint/explicit-module-boundary-types": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          ignoreRestSiblings: true,
+          varsIgnorePattern: "^_",
+          argsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
+      "@typescript-eslint/no-explicit-any": "error",
+      "@typescript-eslint/no-empty-interface": [
+        "error",
+        {
+          allowSingleExtends: true,
+        },
+      ],
+      "@typescript-eslint/no-use-before-define": ["error"],
+      "no-param-reassign": [
+        // Allow modifying props, esp. for DOM Nodes
+        "error",
+        {
+          props: false,
+        },
+      ],
+      "prettier/prettier": "error",
+    },
+    overrides: [
+      {
+        // enable the rule specifically for TypeScript files
+        files: ["*.ts", "*.tsx"],
+        rules: {
+          "@typescript-eslint/explicit-module-boundary-types": ["error"],
+        },
+      },
+    ],
+  },
+);
+export default config;
