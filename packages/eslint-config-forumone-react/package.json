@@ -1,0 +1,46 @@
+{
+  "name": "eslint-config-forumone-react",
+  "description": "Forum One's ESLint configuration for React",
+  "version": "3.0.0",
+  "type": "module",
+  "main": "index.js",
+  "license": "MIT",
+  "author": "Forum One",
+  "contributors": [
+    "KJ Monahan <kj@forumone.com>",
+    "Alex Ford <aford@forumone.com>",
+    "Wade Burelbach <wburelbach@forumone.com>"
+  ],
+  "keywords": [
+    "eslint",
+    "eslintconfig"
+  ],
+  "homepage": "https://github.com/forumone/javascript",
+  "bugs": {
+    "url": "https://github.com/forumone/javascript/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/forumone/javascript"
+  },
+  "peerDependencies": {
+    "eslint": ">=9.0.0",
+    "eslint-config-forumone-es5": ">=3.0.0",
+    "prettier": ">=3.5.0",
+    "react": ">=18.0.0",
+    "typescript": ">=5.7.0"
+  },
+  "peerDependenciesMeta": {
+    "eslint-config-forumone-es5": {
+      "optional": true
+    },
+    "typescript": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react": "^7.37.4",
+    "eslint-plugin-react-hooks": "^5.2.0"
+  }
+}
