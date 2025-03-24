@@ -11,7 +11,7 @@ import globals from "globals";
  */
 const config = tseslint.config(
   eslint.configs.recommended,
-  tseslint.configs.recommendedTypeChecked,
+  tseslint.configs.recommended,
   prettier,
   {
     languageOptions: {
@@ -19,9 +19,6 @@ const config = tseslint.config(
       globals: {
         ...globals.node,
         ...globals.browser,
-      },
-      parserOptions: {
-        projectService: true,
       },
       sourceType: "module",
     },
@@ -57,15 +54,19 @@ const config = tseslint.config(
       ],
       "prettier/prettier": "error",
     },
-    overrides: [
-      {
-        // enable the rule specifically for TypeScript files
-        files: ["*.ts", "*.tsx"],
-        rules: {
-          "@typescript-eslint/explicit-module-boundary-types": ["error"],
-        },
+  },
+  // TypeScript-specific additions
+  {
+    files: ["*.ts", "*.tsx"],
+    extends: [tseslint.configs.recommendedTypeChecked],
+    languageOptions: {
+      parserOptions: {
+        projectService: true,
       },
-    ],
+    },
+    rules: {
+      "@typescript-eslint/explicit-module-boundary-types": ["error"],
+    },
   },
 );
 export default config;
