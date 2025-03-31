@@ -1,5 +1,5 @@
 {
-  "name": "eslint-config-forumone-react",
+  "name": "@forumone/eslint-config-react",
   "description": "Forum One's ESLint configuration for React",
   "version": "3.0.0",
   "type": "module",
