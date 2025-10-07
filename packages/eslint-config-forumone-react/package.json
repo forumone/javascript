@@ -1,7 +1,7 @@
 {
   "name": "@forumone/eslint-config-react",
   "description": "Forum One's ESLint configuration for React",
-  "version": "3.0.2",
+  "version": "3.0.4",
   "type": "module",
   "main": "index.js",
   "license": "MIT",
