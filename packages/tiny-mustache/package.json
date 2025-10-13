@@ -1,0 +1,20 @@
+{
+  "name": "@forumone/tiny-mustache",
+  "version": "1.0.0",
+  "description": "Fork of tiny-mustache for Forum One",
+  "homepage": "https://github.com/forumone/javascript#readme",
+  "bugs": {
+    "url": "https://github.com/forumone/javascript/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/forumone/javascript.git"
+  },
+  "license": "MIT",
+  "author": "Forum One",
+  "type": "module",
+  "main": "mustache.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
