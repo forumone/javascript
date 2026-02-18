@@ -5,14 +5,18 @@ import tseslint from "typescript-eslint";
 import prettier from "eslint-config-prettier";
 import prettierPlugin from "eslint-plugin-prettier";
 import globals from "globals";
+import { globalIgnores } from "eslint/config";
+import storybook from "eslint-plugin-storybook";
 
 /**
  * @type {import('@typescript-eslint/utils').TSESLint.FlatConfig.ConfigFile}
  */
 const config = tseslint.config(
+  globalIgnores(["!.storybook"], "Include Storybook Directory"),
   eslint.configs.recommended,
   tseslint.configs.recommended,
   prettier,
+  storybook.configs["flat/recommended"],
   {
     languageOptions: {
       ecmaVersion: "latest",
