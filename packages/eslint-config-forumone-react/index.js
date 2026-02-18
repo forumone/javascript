@@ -5,7 +5,7 @@ import jsxAlly from "eslint-plugin-jsx-a11y";
 
 const config = defineConfig([
   reactPlugin.configs.flat.recommended,
-  reactHooks.configs["recommended-latest"],
+  reactHooks.configs.flat.recommended,
   jsxAlly.flatConfigs.recommended,
   {
     languageOptions: {
@@ -19,6 +19,9 @@ const config = defineConfig([
       react: reactPlugin,
       "react-hooks": reactHooks,
       "jsx-a11y": jsxAlly,
+    },
+    rules: {
+      "react-hooks/set-state-in-effect": "warn",
     },
   },
 ]);
