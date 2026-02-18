@@ -1,7 +1,7 @@
 {
   "name": "@forumone/eslint-config-es5",
   "description": "Forum One's ESLint configuration for JavaScript and TypeScript",
-  "version": "3.0.5",
+  "version": "3.0.6",
   "type": "module",
   "main": "index.js",
   "license": "MIT",
@@ -24,16 +24,23 @@
     "url": "https://github.com/forumone/javascript"
   },
   "dependencies": {
-    "@eslint/js": "^9.23.0",
+    "@eslint/js": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-prettier": "^5.5.5",
+    "eslint-plugin-storybook": "^10.2.10",
     "globals": "^16.5.0",
     "prettier-plugin-organize-imports": "^4.3.0",
-    "typescript-eslint": "^8.46.2"
+    "typescript-eslint": "^8.56.0"
   },
   "peerDependencies": {
-    "eslint": ">=9.0.0",
-    "prettier": ">=3.5.0",
-    "typescript": ">=5.7.0"
+    "eslint": ">=9.22.0",
+    "prettier": ">=3.8.0",
+    "typescript": ">=5.9.0",
+    "storybook": ">=10.2.0"
+  },
+  "peerDependenciesMeta": {
+    "storybook": {
+      "optional": true
+    }
   }
 }
