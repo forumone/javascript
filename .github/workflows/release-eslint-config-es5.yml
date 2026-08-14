@@ -29,10 +29,11 @@ jobs:
           scope: '@forumone'
 
       - name: Validate release tag matches package version
+        env:
+          ACTUAL_TAG: ${{ github.event.release.tag_name }}
         run: |
           VERSION=$(node -p "require('./package.json').version")
           EXPECTED_TAG="eslint-config-es5-v$VERSION"
-          ACTUAL_TAG="${{ github.event.release.tag_name }}"
           if [[ "$ACTUAL_TAG" != "$EXPECTED_TAG" ]]; then
             echo "Release tag '$ACTUAL_TAG' does not match expected tag '$EXPECTED_TAG' (package.json version $VERSION)" >&2
             exit 1
