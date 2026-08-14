@@ -29,7 +29,20 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
+      - name: Determine npm dist-tag
+        # For example:
+        # - 4.0.1-alpha.1 → publishes under dist-tag alpha.
+        # - 4.0.1 (i.e. a stable release) → publishes under dist-tag latest, the default
+        id: npm-tag
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          if [[ "$VERSION" =~ -([a-zA-Z]+) ]]; then
+            echo "tag=${BASH_REMATCH[1]}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=latest" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Publish to GitHub Packages
-        run: npm publish
+        run: npm publish --tag ${{ steps.npm-tag.outputs.tag }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
