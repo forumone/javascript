@@ -1,7 +1,7 @@
 {
   "name": "@forumone/eslint-config-es5",
   "description": "Forum One's ESLint configuration for JavaScript and TypeScript",
-  "version": "4.0.0",
+  "version": "4.0.1-alpha.1",
   "type": "module",
   "publishConfig": {
     "access": "public"
