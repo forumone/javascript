@@ -3,6 +3,9 @@
   "description": "Forum One's ESLint configuration for JavaScript and TypeScript",
   "version": "4.0.0",
   "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "index.js",
   "exports": {
     ".": "./index.js",
