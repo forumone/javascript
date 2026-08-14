@@ -18,6 +18,8 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v5
+        with:
+          persist-credentials: false
 
       - name: Setup Node for GitHub Packages
         uses: actions/setup-node@v4
@@ -25,6 +27,16 @@ jobs:
           node-version: 24
           registry-url: 'https://npm.pkg.github.com'
           scope: '@forumone'
+
+      - name: Validate release tag matches package version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          EXPECTED_TAG="eslint-config-es5-v$VERSION"
+          ACTUAL_TAG="${{ github.event.release.tag_name }}"
+          if [[ "$ACTUAL_TAG" != "$EXPECTED_TAG" ]]; then
+            echo "Release tag '$ACTUAL_TAG' does not match expected tag '$EXPECTED_TAG' (package.json version $VERSION)" >&2
+            exit 1
+          fi
 
       - name: Install Dependencies
         run: npm ci
