@@ -15,11 +15,6 @@ const config = defineConfig([
         },
       },
     },
-    plugins: {
-      react: reactPlugin,
-      "react-hooks": reactHooks,
-      "jsx-a11y": jsxAlly,
-    },
     rules: {
       "react-hooks/set-state-in-effect": "warn",
     },
