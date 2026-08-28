@@ -19,6 +19,15 @@ const config = defineConfig([
       "react-hooks/set-state-in-effect": "warn",
     },
   },
+  // Disable prop type validation for JSX files. For prop type validation,
+  // use TypeScript in a TSX file. JSX is used for Storybook in non-Next.js
+  // projects and doesn't need strict validation.
+  {
+    files: ["**/*.jsx"],
+    rules: {
+      "react/prop-types": ["off"],
+    },
+  },
 ]);
 
 export default config;
