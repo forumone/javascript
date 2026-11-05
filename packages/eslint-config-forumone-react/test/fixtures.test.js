@@ -35,13 +35,10 @@ for (const [name, configFile] of setups) {
       });
     }
 
-    // KNOWN GAP: index.js uses plugin-react's `recommended` preset, which
-    // enables react/react-in-jsx-scope. With React 17+ (the peer is >=19.2)
-    // that flags every component that doesn't `import React`. Remove `todo`
-    // once the config adds plugin-react's `jsx-runtime` preset.
+    // Regression: the `recommended` preset enables react/react-in-jsx-scope;
+    // the config must also apply plugin-react's `jsx-runtime` preset.
     it(
       "does not require React in scope (modern JSX transform)",
-      { todo: "react/react-in-jsx-scope is enabled" },
       async () => {
         const file = "modern-jsx-transform.jsx";
         assert.deepEqual((await lintRuleIds(eslint, [file]))[file], []);

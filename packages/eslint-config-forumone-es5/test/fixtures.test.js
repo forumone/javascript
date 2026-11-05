@@ -44,13 +44,10 @@ describe("base config fixtures", () => {
     });
   }
 
-  // KNOWN BUG: `files: ["*.ts", "*.tsx"]` in index.js only matches files in the
-  // config's root directory, so nested TypeScript files (i.e. nearly all real
-  // code) skip the type-checked rules. Remove `todo` once the glob is fixed
-  // (likely `**/*.ts`; note that enables new rules for every consumer).
+  // Regression: `files: ["*.ts"]` only matched the config's root directory, so
+  // nested TypeScript files skipped the type-checked rules.
   it(
     "applies type-checked rules to nested TypeScript files",
-    { todo: "files glob in index.js does not match nested .ts files" },
     async () => {
       const file = "nested/floating-promise.ts";
       assert.deepEqual((await lintRuleIds(eslint, [file]))[file], [
@@ -63,12 +60,10 @@ describe("base config fixtures", () => {
 describe("storybook config fixtures", () => {
   const eslint = createESLint("eslint.storybook.config.js");
 
-  // KNOWN BUG: eslint-plugin-storybook 10.2.10 calls context.getFilename(),
-  // which was removed in ESLint 10, so linting any story file throws. Remove
-  // `todo` after bumping eslint-plugin-storybook (10.6.5 is available).
+  // Regression: eslint-plugin-storybook <10.6 called context.getFilename(),
+  // removed in ESLint 10, so linting any story file threw.
   it(
     "reports stories without a default export",
-    { todo: "eslint-plugin-storybook 10.2.10 crashes on ESLint 10" },
     async () => {
       const file = "Button.stories.js";
       assert.deepEqual((await lintRuleIds(eslint, [file]))[file], [

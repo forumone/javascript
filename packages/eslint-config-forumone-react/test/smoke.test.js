@@ -13,9 +13,6 @@ import { composedSamples, reactOnlySamples } from "./samples.js";
 // Deprecated rules we knowingly still use. Add an entry (with a reason) rather
 // than ignoring a failure; remove the entry when the rule is replaced.
 const KNOWN_DEPRECATED = new Set([
-  // Inherited from @forumone/eslint-config-es5 (deprecated in typescript-eslint
-  // v8 in favor of no-empty-object-type); fix it there.
-  "@typescript-eslint/no-empty-interface",
 ]);
 
 const setups = [
@@ -82,12 +79,10 @@ for (const [name, config, configFile, samples] of setups) {
 }
 
 describe("settings", () => {
-  // KNOWN GAP: without settings.react.version, eslint-plugin-react prints
-  // "React version not specified" on every run. Remove `todo` once the config
-  // sets `settings: { react: { version: "detect" } }`.
+  // Without settings.react.version, eslint-plugin-react prints "React version
+  // not specified" on every run.
   it(
     "sets the React version for eslint-plugin-react",
-    { todo: "settings.react.version is not set" },
     async () => {
       const config = await createESLint("eslint.react.config.js").calculateConfigForFile(
         "sample.jsx",

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export function Synced() {
   const [copy, setCopy] = useState(0);

@@ -49,7 +49,7 @@
   },
   "peerDependencies": {
     "eslint": ">=9.22.0",
-    "eslint-plugin-storybook": "^10.2.10",
+    "eslint-plugin-storybook": "^10.6.5",
     "prettier": ">=3.8.0",
     "typescript": ">=5.9.0"
   },
@@ -60,9 +60,9 @@
   },
   "devDependencies": {
     "eslint": "^10.0.0",
-    "eslint-plugin-storybook": "^10.2.10",
+    "eslint-plugin-storybook": "^10.6.5",
     "prettier": "^3.8.1",
-    "storybook": "^10.2.10",
+    "storybook": "^10.6.5",
     "typescript": "^5.9.3"
   }
 }

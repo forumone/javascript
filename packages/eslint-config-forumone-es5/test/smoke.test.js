@@ -12,10 +12,7 @@ import { baseSamples, storybookSamples } from "./samples.js";
 
 // Deprecated rules we knowingly still use. Add an entry (with a reason) rather
 // than ignoring a failure; remove the entry when the rule is replaced.
-const KNOWN_DEPRECATED = new Set([
-  // Deprecated in typescript-eslint v8 in favor of no-empty-object-type.
-  "@typescript-eslint/no-empty-interface",
-]);
+const KNOWN_DEPRECATED = new Set([]);
 
 const entryPoints = [
   ["index.js", base, "eslint.config.js", baseSamples],
