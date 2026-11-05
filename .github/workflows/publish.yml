@@ -70,6 +70,13 @@ jobs:
             echo "needed=true" >> "$GITHUB_OUTPUT"
           fi
 
+      # The react package depends on the es5 package via a `file:` link, so
+      # es5's own dependencies (e.g. @eslint/js) must be installed too.
+      - name: Install es5 Dependencies (linked by react)
+        if: steps.check.outputs.needed == 'true' && matrix.package == 'eslint-config-forumone-react'
+        working-directory: ./packages/eslint-config-forumone-es5
+        run: npm ci
+
       - name: Install Dependencies
         # tiny-mustache has no lockfile or dependencies
         if: steps.check.outputs.needed == 'true' && hashFiles(format('packages/{0}/package-lock.json', matrix.package)) != ''
