@@ -70,6 +70,13 @@ jobs:
             echo "needed=true" >> "$GITHUB_OUTPUT"
           fi
 
+      # The react package depends on the es5 package via a `file:` link, so
+      # es5's own dependencies (e.g. @eslint/js) must be installed too.
+      - name: Install es5 Dependencies (linked by react)
+        if: steps.check.outputs.needed == 'true' && matrix.package == 'eslint-config-forumone-react'
+        working-directory: ./packages/eslint-config-forumone-es5
+        run: npm ci
+
       - name: Install Dependencies
         # tiny-mustache has no lockfile or dependencies
         if: steps.check.outputs.needed == 'true' && hashFiles(format('packages/{0}/package-lock.json', matrix.package)) != ''
@@ -121,15 +128,15 @@ jobs:
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
 
           # The version must be on npm (published now or earlier) before we release it.
-          # Registry metadata can lag a freshly published version, so retry for ~90s.
+          # Registry metadata can lag a freshly published version (we've seen ~75s), so retry for ~2.5 min.
           ON_NPM=false
-          for attempt in 1 2 3 4 5 6; do
+          for attempt in 1 2 3 4 5 6 7 8 9 10; do
             if [[ -n "$(npm view "@forumone/eslint-config-es5@$VERSION" version 2>/dev/null || true)" ]]; then
               ON_NPM=true
               break
             fi
             echo "Attempt $attempt: @forumone/eslint-config-es5@$VERSION not visible on npm yet."
-            [[ $attempt -lt 6 ]] && sleep 15
+            [[ $attempt -lt 10 ]] && sleep 15
           done
           if [[ "$ON_NPM" != "true" ]]; then
             echo "@forumone/eslint-config-es5@$VERSION is not on npm; not creating a release."
@@ -153,7 +160,10 @@ jobs:
   # so call the GitHub Packages workflow directly.
   publish-es5-github:
     needs: release-es5
-    if: needs.release-es5.outputs.created == 'true'
+    # !cancelled() is required: without a status function, GitHub implicitly adds
+    # success(), which also fails when any *earlier* job in the chain (e.g. one
+    # package's publish-npm leg) failed, and would skip this job.
+    if: ${{ !cancelled() && needs.release-es5.outputs.created == 'true' }}
     uses: ./.github/workflows/release-eslint-config-es5.yml
     with:
       tag_name: ${{ needs.release-es5.outputs.tag }}
