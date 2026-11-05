@@ -34,6 +34,13 @@ jobs:
         with:
           node-version: 24
 
+      # The react package depends on the es5 package via a `file:` link, so
+      # es5's own dependencies (e.g. @eslint/js) must be installed too.
+      - name: Install es5 Dependencies (linked by react)
+        if: matrix.package == 'eslint-config-forumone-react'
+        working-directory: ./packages/eslint-config-forumone-es5
+        run: npm ci
+
       - name: Install Dependencies
         run: npm ci
 
