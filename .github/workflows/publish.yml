@@ -1,0 +1,162 @@
+name: Publish packages
+
+# Publishes any package whose package.json version is not yet on npm.
+# To release: bump `version` (and update the CHANGELOG) in a PR, then merge to main.
+# Packages whose version is already on npm are skipped.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'packages/**'
+      - '.github/workflows/publish.yml'
+  workflow_dispatch:
+
+# Never run two publishes at once, and don't cancel one midway.
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+jobs:
+  publish-npm:
+    # workflow_dispatch can be run on any branch; only ever publish from main.
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - eslint-config-forumone-es5
+          - eslint-config-forumone-react
+          - tiny-mustache
+    defaults:
+      run:
+        working-directory: ./packages/${{ matrix.package }}
+    permissions:
+      contents: read
+      id-token: write # npm trusted publishing (OIDC)
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Reject pre-release versions
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          if [[ "$VERSION" == *-* ]]; then
+            echo "Pre-release version '$VERSION' is not supported by this workflow." >&2
+            exit 1
+          fi
+
+      - name: Check whether this version is already on npm
+        id: check
+        run: |
+          NAME=$(node -p "require('./package.json').name")
+          VERSION=$(node -p "require('./package.json').version")
+          # Prints nothing if the package or version doesn't exist yet.
+          FOUND=$(npm view "$NAME@$VERSION" version 2>/dev/null || true)
+          if [[ -n "$FOUND" ]]; then
+            echo "$NAME@$VERSION is already published; skipping."
+            echo "needed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "$NAME@$VERSION is not on npm; will publish."
+            echo "needed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install Dependencies
+        # tiny-mustache has no lockfile or dependencies
+        if: steps.check.outputs.needed == 'true' && hashFiles(format('packages/{0}/package-lock.json', matrix.package)) != ''
+        run: npm ci
+
+      - name: Run tests
+        if: steps.check.outputs.needed == 'true'
+        run: |
+          # Skip packages with no real test script (e.g. the npm-init stub).
+          TEST_SCRIPT=$(node -p "require('./package.json').scripts?.test ?? ''")
+          if [[ -z "$TEST_SCRIPT" || "$TEST_SCRIPT" == *"no test specified"* ]]; then
+            echo "No test script; skipping."
+          else
+            npm test
+          fi
+
+      - name: Publish to npm
+        # Authenticates via OIDC trusted publishing; provenance is attached automatically.
+        # Pre-release versions were already rejected above, so this always publishes `latest`.
+        if: steps.check.outputs.needed == 'true'
+        run: npm publish
+
+  # Create a GitHub release for the ES5 config (only when its version has no release yet,
+  # i.e. it was just published), then publish it to GitHub Packages.
+  release-es5:
+    needs: publish-npm
+    # Run even if another package's publish failed; the npm check below guards correctness.
+    if: ${{ !cancelled() && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      tag: ${{ steps.release.outputs.tag }}
+      created: ${{ steps.release.outputs.created }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Create release if this version has none
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          VERSION=$(node -p "require('./packages/eslint-config-forumone-es5/package.json').version")
+          TAG="eslint-config-es5-v$VERSION"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+          # The version must be on npm (published now or earlier) before we release it.
+          # Registry metadata can lag a freshly published version, so retry for ~90s.
+          ON_NPM=false
+          for attempt in 1 2 3 4 5 6; do
+            if [[ -n "$(npm view "@forumone/eslint-config-es5@$VERSION" version 2>/dev/null || true)" ]]; then
+              ON_NPM=true
+              break
+            fi
+            echo "Attempt $attempt: @forumone/eslint-config-es5@$VERSION not visible on npm yet."
+            [[ $attempt -lt 6 ]] && sleep 15
+          done
+          if [[ "$ON_NPM" != "true" ]]; then
+            echo "@forumone/eslint-config-es5@$VERSION is not on npm; not creating a release."
+            echo "created=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG already exists; nothing to do."
+            echo "created=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          gh release create "$TAG" \
+            --target "$GITHUB_SHA" \
+            --title "@forumone/eslint-config-es5 $VERSION" \
+            --generate-notes
+          echo "created=true" >> "$GITHUB_OUTPUT"
+
+  # Releases created with GITHUB_TOKEN don't fire `release: published`,
+  # so call the GitHub Packages workflow directly.
+  publish-es5-github:
+    needs: release-es5
+    if: needs.release-es5.outputs.created == 'true'
+    uses: ./.github/workflows/release-eslint-config-es5.yml
+    with:
+      tag_name: ${{ needs.release-es5.outputs.tag }}
+    permissions:
+      contents: read
+      packages: write

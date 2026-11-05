@@ -2,12 +2,19 @@ name: Release @forumone/eslint-config-es5 on GitHub
 
 on:
   release:
-    types: [published] # Triggers when you create a GitHub release
+    types: [published] # Triggers when you create a GitHub release manually
+  workflow_call: # Called by publish.yml, since releases it creates can't trigger this workflow
+    inputs:
+      tag_name:
+        description: Release tag, e.g. eslint-config-es5-v5.0.1
+        required: true
+        type: string
 
 jobs:
   publish-registry:
     # Only run for releases tagged for this package, e.g. eslint-config-es5-v4.0.1
-    if: startsWith(github.event.release.tag_name, 'eslint-config-es5-v')
+    # (inputs.tag_name is set when called from publish.yml; otherwise use the release event)
+    if: startsWith(inputs.tag_name || github.event.release.tag_name, 'eslint-config-es5-v')
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -30,7 +37,7 @@ jobs:
 
       - name: Validate release tag matches package version
         env:
-          ACTUAL_TAG: ${{ github.event.release.tag_name }}
+          ACTUAL_TAG: ${{ inputs.tag_name || github.event.release.tag_name }}
         run: |
           VERSION=$(node -p "require('./package.json').version")
           EXPECTED_TAG="eslint-config-es5-v$VERSION"
