@@ -37,10 +37,10 @@ const config = tseslint.config(
         },
       ],
       "@typescript-eslint/no-explicit-any": "error",
-      "@typescript-eslint/no-empty-interface": [
+      "@typescript-eslint/no-empty-object-type": [
         "error",
         {
-          allowSingleExtends: true,
+          allowInterfaces: "with-single-extends",
         },
       ],
       "@typescript-eslint/no-use-before-define": "error",
@@ -78,7 +78,7 @@ const config = tseslint.config(
   },
   // TypeScript-specific additions
   {
-    files: ["*.ts", "*.tsx"],
+    files: ["**/*.ts", "**/*.tsx"],
     extends: [tseslint.configs.recommendedTypeChecked],
     languageOptions: {
       parserOptions: {

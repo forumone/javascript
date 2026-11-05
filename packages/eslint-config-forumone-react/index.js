@@ -5,9 +5,16 @@ import jsxAlly from "eslint-plugin-jsx-a11y";
 
 const config = defineConfig([
   reactPlugin.configs.flat.recommended,
+  // Modern JSX transform (React 17+): no need to import React in every file.
+  reactPlugin.configs.flat["jsx-runtime"],
   reactHooks.configs.flat.recommended,
   jsxAlly.flatConfigs.recommended,
   {
+    settings: {
+      react: {
+        version: "detect",
+      },
+    },
     languageOptions: {
       parserOptions: {
         ecmaFeatures: {

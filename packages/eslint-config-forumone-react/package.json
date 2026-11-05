@@ -1,9 +1,16 @@
 {
   "name": "@forumone/eslint-config-react",
   "description": "Forum One's ESLint configuration for React",
-  "version": "3.0.9",
+  "version": "3.1.1",
   "type": "module",
   "main": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "scripts": {
+    "test": "node --test \"test/**/*.test.js\"",
+    "snapshot": "UPDATE_SNAPSHOT=1 node --test test/snapshot.test.js"
+  },
   "license": "MIT",
   "author": "Forum One",
   "contributors": [
@@ -24,14 +31,14 @@
     "url": "git+https://github.com/forumone/javascript.git"
   },
   "peerDependencies": {
-    "eslint": ">=9.22.0",
-    "eslint-config-forumone-es5": ">=3.0.0 <5.0.0",
-    "prettier": ">=3.8.0",
+    "eslint": "^9.22.0",
+    "@forumone/eslint-config-es5": ">=3.0.0 <6.0.0",
+    "prettier": "^3.8.0",
     "react": ">=19.2.0",
-    "typescript": ">=5.9.0"
+    "typescript": ">=5.9.0 <6.1.0"
   },
   "peerDependenciesMeta": {
-    "eslint-config-forumone-es5": {
+    "@forumone/eslint-config-es5": {
       "optional": true
     },
     "typescript": {
@@ -41,6 +48,12 @@
   "dependencies": {
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^7.0.1"
+    "eslint-plugin-react-hooks": "^7.1.1"
+  },
+  "devDependencies": {
+    "@forumone/eslint-config-es5": "file:../eslint-config-forumone-es5",
+    "eslint": "^9.39.5",
+    "prettier": "^3.9.10",
+    "react": "^19.3.1"
   }
 }
